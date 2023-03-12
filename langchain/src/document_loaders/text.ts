@@ -12,10 +12,13 @@ export class TextLoader extends BaseDocumentLoader {
     return [raw];
   }
 
-  public async load(): Promise<Document[]> {
+  public async load(
+    buffer?: Buffer,
+    fileMetadata?: object
+  ): Promise<Document[]> {
     const { readFile } = await TextLoader.imports();
-    const text = await readFile(this.filePath, "utf8");
-    const metadata = { source: this.filePath };
+    const text = buffer?.toString() ?? (await readFile(this.filePath, "utf8"));
+    const metadata = { source: this.filePath, ...fileMetadata };
     const parsed = await this.parse(text);
     parsed.forEach((pageContent, i) => {
       if (typeof pageContent !== "string") {

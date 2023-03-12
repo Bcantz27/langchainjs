@@ -11,7 +11,7 @@ export abstract class VectorStore {
   abstract addVectors(
     vectors: number[][],
     documents: Document[]
-  ): Promise<void>;
+  ): Promise<void | string[]>;
 
   abstract similaritySearchVectorWithScore(
     query: number[],

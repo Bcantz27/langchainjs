@@ -53,7 +53,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --testPathIgnorePatterns=\\.int\\.test.ts",
     "test:node16": "NODE_OPTIONS='--experimental-vm-modules --experimental-fetch' jest --testPathIgnorePatterns=\\.int\\.test.ts",
     "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest --testPathPattern=\\.int\\.test.ts --testTimeout 20000",
-    "prepare": "husky install",
+    "prepare": "",
     "format": "prettier --write \"src\"",
     "format:diff": "prettier --list-different \"src\"",
     "ci": "yarn lint && yarn format:diff && yarn build"
