@@ -21,3 +21,4 @@ langchain/docs/
 
 Chinook.db
 Chinook_Sqlite.sql
+langchain/*.tgz
