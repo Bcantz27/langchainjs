@@ -29,11 +29,16 @@ export class PineconeStore extends VectorStore {
     this.namespace = namespace;
   }
 
-  async addDocuments(documents: Document[], ids?: string[]): Promise<void> {
+  async addDocuments(
+    documents: Document[],
+    preventDupes?: boolean,
+    ids?: string[]
+  ): Promise<string[]> {
     const texts = documents.map(({ pageContent }) => pageContent);
     return this.addVectors(
       await this.embeddings.embedDocuments(texts),
       documents,
+      preventDupes,
       ids
     );
   }
@@ -41,9 +46,33 @@ export class PineconeStore extends VectorStore {
   async addVectors(
     vectors: number[][],
     documents: Document[],
+    preventDupes?: boolean,
     ids?: string[]
-  ): Promise<void> {
+  ): Promise<string[]> {
     const documentIds = ids == null ? documents.map(() => uuidv4()) : ids;
+
+    if (preventDupes) {
+      const promises = vectors.map(async (v, i) => {
+        const similiarVectors = await this.similaritySearchVectorWithScore(
+          v,
+          1
+        );
+        const topVector = similiarVectors[0];
+        return {
+          vector: v,
+          include: topVector[1] && topVector[1] !== 1,
+          index: i,
+        };
+      });
+      const dataWithIncludes = await Promise.all(promises);
+      dataWithIncludes.forEach((d) => {
+        if (!d.include) {
+          vectors.splice(d.index, 1);
+          documents.splice(d.index, 1);
+          documentIds.splice(d.index, 1);
+        }
+      });
+    }
 
     await this.pineconeClient.upsert({
       upsertRequest: {
@@ -58,6 +87,8 @@ export class PineconeStore extends VectorStore {
         namespace: this.namespace,
       },
     });
+
+    return documentIds;
   }
 
   async similaritySearchVectorWithScore(

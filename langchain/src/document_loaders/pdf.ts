@@ -10,11 +10,14 @@ export class PDFLoader extends BaseDocumentLoader {
     super();
   }
 
-  public async load(): Promise<Document[]> {
+  public async load(
+    buffer?: Buffer,
+    fileMetadata?: object
+  ): Promise<Document[]> {
     const { readFile } = await PDFLoader.imports();
-    const buffer = await readFile(this.filePath);
-    const parsed = await pdf(buffer);
-    const metadata = { source: this.filePath };
+    const fileData = buffer ?? (await readFile(this.filePath));
+    const parsed = await pdf(fileData);
+    const metadata = { source: this.filePath, ...fileMetadata };
     return [new Document({ pageContent: parsed.text, metadata })];
   }
 

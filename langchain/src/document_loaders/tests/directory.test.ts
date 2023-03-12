@@ -15,7 +15,7 @@ test("Test Directory loader", async () => {
   const loader = new DirectoryLoader(
     directoryPath,
     {
-      ".csv": (p) => new CSVLoader(p, "html"),
+      ".csv": (p) => new CSVLoader(p),
       ".pdf": (p) => new PDFLoader(p),
       ".txt": (p) => new TextLoader(p),
       ".json": (p) => new JSONLoader(p),
