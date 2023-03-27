@@ -29,7 +29,11 @@ export class PineconeStore extends VectorStore {
     this.namespace = namespace;
   }
 
-  async addDocuments(documents: Document[], ids?: string[]): Promise<string[]> {
+  async addDocuments(
+    documents: Document[],
+    preventDupes?: boolean,
+    ids?: string[]
+  ): Promise<string[]> {
     const texts = documents.map(({ pageContent }) => pageContent);
     return this.addVectors(
       await this.embeddings.embedDocuments(texts),
