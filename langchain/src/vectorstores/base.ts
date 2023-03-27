@@ -13,7 +13,7 @@ export abstract class VectorStore {
     documents: Document[]
   ): Promise<void | string[]>;
 
-  abstract addDocuments(documents: Document[]): Promise<void>;
+  abstract addDocuments(documents: Document[]): Promise<void | string[]>;
 
   abstract similaritySearchVectorWithScore(
     query: number[],
