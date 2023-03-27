@@ -24,6 +24,7 @@ test("PineconeStore with external ids", async () => {
 
   await store.addDocuments(
     [{ pageContent: "hello", metadata: { a: 1 } }],
+    true,
     ["id1"]
   );
 
